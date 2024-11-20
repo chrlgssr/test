@@ -6,7 +6,7 @@
 /*   By: cgrasser <cgrasser@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 13:10:56 by cgrasser          #+#    #+#             */
-/*   Updated: 2024/11/17 14:48:44 by cgrasser         ###   ########.fr       */
+/*   Updated: 2024/11/20 19:46:11 by cgrasser         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,19 +59,25 @@ char	*ft_uitoa_base(unsigned int n, char *base)
 void	handle_unsigned_int(unsigned int value, t_flags *flags, size_t *len)
 {
 	char	*str_nbr;
-	int		size;
-
+	int		size_s;
+	
 	str_nbr = ft_uitoa_base(value, "0123456789");
-	size = ft_strlen(str_nbr);
-	if (!flags->left)
-	{
-		handle_flag_space(flags->space, size, len);
-		handle_flag_zero(flags->zero, size, len);
-	}
+	size_s = ft_strlen(str_nbr);
+	if (flags->precision > size_s)
+		return (handle_integer_precision(0, str_nbr, flags, len));
+	if (!flags->minus)
+		handle_integer_no_minus(0, flags, len, size_s);
+	else if(flags->plus || flags->space)
+		handle_flag_print(0, flags, len);
 	ft_putstr_fd(str_nbr, 1);
-	*len += size;
-	if (flags->left)
-		handle_flag_space(flags->space, size, len);
+	if (flags->minus)
+	{
+		if (flags->plus || flags->space)
+			handle_flag_width(flags->width, size_s + 1, len, SPACE);
+		else
+			handle_flag_width(flags->width, size_s, len, SPACE);
+	}
 	free(str_nbr);
+	*len += size_s;
 }
 

@@ -1,10 +1,9 @@
 #include "ft_printf.h"
+#include <stdlib.h>
 #include	<stdio.h>
 
-int	main()
+int main()
 {
-	//char *test = "coucou";
-	ft_printf("%.2d|\n", 9);
-	printf("%.2d|\n", 9);
-
+	ft_printf("%#-10.6X|\n", 42);
+	printf("%#-10.6X|\n", 42);
 }

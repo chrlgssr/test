@@ -6,7 +6,7 @@
 /*   By: cgrasser <cgrasser@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 09:05:57 by cgrasser          #+#    #+#             */
-/*   Updated: 2024/11/17 12:54:57 by cgrasser         ###   ########.fr       */
+/*   Updated: 2024/11/20 20:17:54 by cgrasser         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	ft_ptrtoa_base_recur(unsigned long int nb, int *i, char *base, char 
 
 }
 
-static char *ft_ptrtoa_base(unsigned long int nb, char *base)
+char *ft_ptrtoa_base(unsigned long int nb, char *base)
 {
 	char	*to_return;
 	int		len;
@@ -53,31 +53,35 @@ static char *ft_ptrtoa_base(unsigned long int nb, char *base)
 		return (NULL);
 	i = 0;
 	to_return[i++] = '0';
-	to_return[i++] = 'x';
+	if (base[10] == 65)
+		to_return[i++] = 'X';
+	else
+		to_return[i++] = 'x';
 	ft_ptrtoa_base_recur(nb, &i, base, to_return, base_len);
 	to_return[i] = '\0';
 	return (to_return);
 }
 
-static void	ft_nil(size_t *len)
-{
-	ft_putstr_fd("(nil)", 1);
-	*len += 5;
-}
-
 void	handle_pointer(unsigned long int ptr, t_flags *flags, size_t *len)
 {
+	int		size_s;
 	char	*str_ptr;
-	int		size;
-	if (!ptr)
-		return (ft_nil(len));
+
 	str_ptr = ft_ptrtoa_base(ptr, "0123456789abcdef");
-	size = ft_strlen(str_ptr);
-	if (!flags->left)
-		handle_flag_space(flags->space, size, len);
-	ft_putstr_fd(str_ptr, 1);
-	*len += size;
-	if (flags->left)
-		handle_flag_space(flags->space, size, len);
-	free(str_ptr);
+	if (!str_ptr)
+		size_s = 3;
+	else
+		size_s = ft_strlen(str_ptr);
+	if (!flags->minus)
+		handle_flag_width(flags->width, size_s, len, SPACE);
+	if (!str_ptr)
+		write(1, "0x0", size_s);
+	else
+	{
+		write(1, str_ptr, size_s);
+		free(str_ptr);
+	}
+	if (flags->minus)
+		handle_flag_width(flags->width, size_s, len, SPACE);
+	*len += size_s;
 }

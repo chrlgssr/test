@@ -6,7 +6,7 @@
 /*   By: cgrasser <cgrasser@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 19:39:44 by cgrasser          #+#    #+#             */
-/*   Updated: 2024/11/17 10:56:57 by cgrasser         ###   ########.fr       */
+/*   Updated: 2024/11/19 15:09:51 by cgrasser         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,28 @@ t_flags	*ft_flagsnew(void)
 }
 void	ft_reset_flags(t_flags *flags)
 {
-	flags->left = 0;
+	flags->plus = 0;
+	flags->minus = 0;
+	flags->hash = 0;
 	flags->zero = 0;
-	flags->precision = 0;
 	flags->space = 0;
+	flags->precision = -1;
+	flags->width = 0;
+}
+
+void	handle_flag_width(int width, int len_word, size_t *len, int c)
+{
+	int		nb_space;
+	char	to_print;
+
+	if (c == SPACE)
+		to_print = ' ';
+	else
+		to_print = '0';
+	nb_space = width - len_word;
+	while (nb_space-- > 0)
+	{
+		ft_putchar_fd(to_print, 1);
+		(*len)++;
+	}
 }
